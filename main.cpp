@@ -6,20 +6,19 @@
 
 int main (int argc, char *argv[]) {
     Game game;
-    InitWindow(game.windowWidth, game.windowHeight, game.windowName.data());
-    SetTargetFPS(game.FPS);
-    
+    game.BasicSet();
+
+
     while(!WindowShouldClose())
     {
         game.Init();
-        int choise = game.StartPage();
-        switch (choise)
+        switch (game.StartPage())
         {
             case 1:
                 game.Run();
                 break;
             case 0:
-                CloseWindow();
+                game.endGame();
                 break;
             default:;
         }

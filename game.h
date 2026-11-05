@@ -4,11 +4,15 @@
 #include <cstdint>
 #include <ctime>
 #include <string>
+#include <string_view>
 #include "raylib.h"
 #include "./components/paddle.h"
 #include "./components/velocity.h"
 #include "./components/ball.h"
 #include "./components/Line.h"
+
+#define START_GAME true
+#define EXIT_GAME false
 
 
 class Game 
@@ -22,6 +26,12 @@ class Game
     private:
         bool isPause = false;
         bool isEnd = false;
+
+        static constexpr int NameSize = 100;
+        static constexpr int HintSize = 20;
+        static constexpr std::string_view startHint_1 = "press space to start game";
+        static constexpr std::string_view startHint_2 = "press ECS to exit game";
+        inline static Sound sound_collision;
 
         float acceleration = 1000.0f;
         float d_acceleration = 1000.0f;
@@ -39,9 +49,11 @@ class Game
     public:
         Game(){;}
         ~Game() = default; 
+        void BasicSet();
         void Init();
         void Run();
         int StartPage();
+        void endGame();
 
     private:
         void drawItems();
@@ -52,6 +64,11 @@ class Game
         void DoTheMove();
         //  time for seconds
         void Stop(float* target, float time);
+
+        void UnloadAnySound();
+        void loadEverySound();
+
+
 
 
 };

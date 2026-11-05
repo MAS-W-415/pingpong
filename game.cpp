@@ -6,6 +6,8 @@
 
 void Game::Init()
 {
+    isEnd = false;
+
     p_left = Paddle(
             Rectangle{
                 (float)windowWidth / 10 - (float)windowWidth / 30,
@@ -60,6 +62,7 @@ void Game::Init()
 
 void Game::Run()
 {
+    isPause = true;
     while(!isEnd)
     {
         if(IsKeyPressed(KEY_SPACE))
@@ -214,6 +217,7 @@ void Game::handleCollision()
     {
         ball.v.vx = -ball.v.vx;
         ball.v.speedUp(0.0f, p_right.v.vy * collisionFactor);
+        PlaySound(Game::sound_collision);
     }
 
     if(
@@ -225,6 +229,7 @@ void Game::handleCollision()
     {
         ball.v.vx = -ball.v.vx;
         ball.v.speedUp(0.0f, p_left.v.vy * collisionFactor);
+        PlaySound(Game::sound_collision);
     }
 
     if(
@@ -242,6 +247,7 @@ void Game::handleCollision()
     )
     {
         ball.v.vy = -ball.v.vy;
+        PlaySound(Game::sound_collision);
     }
 
     if(
@@ -270,6 +276,7 @@ void Game::handleCollision()
         }
         p_left.v.vy = -p_left.v.vy;
         Stop(&p_left.isSTOP, 0.2f);
+        PlaySound(Game::sound_collision);
     }
 
     if(
@@ -315,6 +322,7 @@ void Game::handleCollision()
         }
         p_right.v.vy = -p_right.v.vy;
         Stop(&p_right.isSTOP, 0.2f);
+        PlaySound(Game::sound_collision);
     }
 }
 
@@ -337,24 +345,59 @@ int Game::StartPage()
 {
     while(true)
     {
-        if(IsKeyPressed(KEY_G))
+        if(IsKeyPressed(KEY_SPACE))
         {
-            return 1;
+            return START_GAME;
         }
         if(IsKeyPressed(KEY_ESCAPE))
         {
-            return 0;
+            return EXIT_GAME;
         }
         BeginDrawing();
-            drawBackground();
-            int w = MeasureText(windowName.data(), 50);
-            DrawText(
-                    windowName.data(), 
-                    (windowWidth - w) / 2, 
-                    windowHeight / 3, 
-                    50,
-                    WHITE);
+            drawStartPage();
         EndDrawing();
 
     }
+}
+
+void Game::drawStartPage()
+{
+    drawBackground();
+    int name_width = MeasureText(windowName.data(), NameSize);
+    int hint_1_width = MeasureText(startHint_1.data(), HintSize);
+    int hint_2_width = MeasureText(startHint_2.data(), HintSize);
+    DrawText(
+            windowName.data(), 
+            (windowWidth - name_width) / 2, 
+            windowHeight / 3, 
+            NameSize,
+            WHITE
+            );
+    DrawText(
+            startHint_1.data(),
+            (windowWidth - hint_1_width) / 2,
+            2 * windowHeight / 3,
+            HintSize,
+            WHITE
+            );
+}
+
+void Game::endGame()
+{
+    UnloadAnySound();
+    CloseAudioDevice();
+    CloseWindow();
+}
+
+void Game::UnloadAnySound()
+{
+    UnloadSound(Game::sound_collision);
+}
+
+void Game::BasicSet()
+{
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
+    InitWindow(windowWidth, windowHeight, windowName.data());
+    InitAudioDevice();
+    Game::sound_collision = LoadSound("./sounds/random.wav");
 }
