@@ -1,8 +1,10 @@
 #include "game.h"
 #include <algorithm>
+#include <cmath>
 #include <cstdio>
 #include <raylib.h>
 #include <string>
+#include <string_view>
 
 void Game::Init()
 {
@@ -217,7 +219,7 @@ void Game::handleCollision()
     {
         ball.v.vx = -ball.v.vx;
         ball.v.speedUp(0.0f, p_right.v.vy * collisionFactor);
-        PlaySound(Game::sound_collision);
+        PlaySound(Game::sound_collision_ball2rec);
     }
 
     if(
@@ -229,7 +231,7 @@ void Game::handleCollision()
     {
         ball.v.vx = -ball.v.vx;
         ball.v.speedUp(0.0f, p_left.v.vy * collisionFactor);
-        PlaySound(Game::sound_collision);
+        PlaySound(Game::sound_collision_ball2rec);
     }
 
     if(
@@ -247,7 +249,7 @@ void Game::handleCollision()
     )
     {
         ball.v.vy = -ball.v.vy;
-        PlaySound(Game::sound_collision);
+        PlaySound(Game::sound_collision_ball2rec);
     }
 
     if(
@@ -276,7 +278,7 @@ void Game::handleCollision()
         }
         p_left.v.vy = -p_left.v.vy;
         Stop(&p_left.isSTOP, 0.2f);
-        PlaySound(Game::sound_collision);
+        PlaySound(Game::sound_collision_rec2wall);
     }
 
     if(
@@ -293,6 +295,7 @@ void Game::handleCollision()
             {rightBoundary.endPosX, rightBoundary.endPosY})
     )
     {
+        PlaySound(Game::sound_ball_out);
         isEnd = true;
     }
 
@@ -322,7 +325,7 @@ void Game::handleCollision()
         }
         p_right.v.vy = -p_right.v.vy;
         Stop(&p_right.isSTOP, 0.2f);
-        PlaySound(Game::sound_collision);
+        PlaySound(Game::sound_collision_rec2wall);
     }
 }
 
@@ -349,7 +352,7 @@ int Game::StartPage()
         {
             return START_GAME;
         }
-        if(IsKeyPressed(KEY_ESCAPE))
+        if(WindowShouldClose())
         {
             return EXIT_GAME;
         }
@@ -364,8 +367,6 @@ void Game::drawStartPage()
 {
     drawBackground();
     int name_width = MeasureText(windowName.data(), NameSize);
-    int hint_1_width = MeasureText(startHint_1.data(), HintSize);
-    int hint_2_width = MeasureText(startHint_2.data(), HintSize);
     DrawText(
             windowName.data(), 
             (windowWidth - name_width) / 2, 
@@ -373,13 +374,12 @@ void Game::drawStartPage()
             NameSize,
             WHITE
             );
-    DrawText(
-            startHint_1.data(),
-            (windowWidth - hint_1_width) / 2,
-            2 * windowHeight / 3,
-            HintSize,
-            WHITE
-            );
+    
+    static int hint_index = 0;
+    if(drawHint(hints[hint_index]) == 0) 
+    {
+        hint_index = GetRandomValue(0, Game::HintNum - 1);
+    }
 }
 
 void Game::endGame()
@@ -391,7 +391,9 @@ void Game::endGame()
 
 void Game::UnloadAnySound()
 {
-    UnloadSound(Game::sound_collision);
+    UnloadSound(Game::sound_collision_ball2rec);
+    UnloadSound(Game::sound_collision_rec2wall);
+    UnloadSound(Game::sound_ball_out);
 }
 
 void Game::BasicSet()
@@ -399,5 +401,22 @@ void Game::BasicSet()
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
     InitWindow(windowWidth, windowHeight, windowName.data());
     InitAudioDevice();
-    Game::sound_collision = LoadSound("./sounds/random.wav");
+    Game::sound_collision_ball2rec = LoadSound("./sounds/random.wav");
+    Game::sound_collision_rec2wall = LoadSound("./sounds/explosion.wav");
+    Game::sound_ball_out = LoadSound("./sounds/random (1).wav");
+}
+
+bool Game::drawHint(const std::string_view& hint)
+{
+    double time = GetTime();
+    double alpha = std::max(std::sin(time), 0.0);
+    int hint_width = MeasureText(hint.data(), HintSize);
+    DrawText(
+            hint.data(), 
+            (windowWidth - hint_width) / 2, 
+            2 * windowHeight / 3, 
+            HintSize,
+            Fade(WHITE, alpha)
+            );
+    return alpha != 0.0;
 }

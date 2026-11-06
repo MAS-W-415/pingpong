@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <array>
 #include <cstdint>
 #include <ctime>
 #include <string>
@@ -29,9 +30,14 @@ class Game
 
         static constexpr int NameSize = 100;
         static constexpr int HintSize = 20;
-        static constexpr std::string_view startHint_1 = "press space to start game";
-        static constexpr std::string_view startHint_2 = "press ECS to exit game";
-        inline static Sound sound_collision;
+        static constexpr int HintNum = 2;
+        static constexpr std::array<std::string_view, HintNum> hints{
+            "press space to start game",
+            "press ESC to exit game"
+        };
+        inline static Sound sound_collision_ball2rec;
+        inline static Sound sound_collision_rec2wall;
+        inline static Sound sound_ball_out;
 
         float acceleration = 1000.0f;
         float d_acceleration = 1000.0f;
@@ -59,6 +65,8 @@ class Game
         void drawItems();
         void drawBackground();
         void drawStartPage();
+        //  return zero value means the hint is now invisable
+        bool drawHint(const std::string_view& hint);
         void handleKeyboard();
         void handleCollision();
         void DoTheMove();
