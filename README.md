@@ -6,17 +6,16 @@ A small Pong demo built with C++17 and [raylib](https://www.raylib.com/).
 
 ### 简介
 
-一个使用 C++17 和 raylib 5.5 编写的双人 Pong demo，包含左右球拍、球的反弹、边界碰撞、暂停功能和开始界面。球越过左边界或右边界时本局结束。
+一个使用 C++17 和 raylib 5.5 编写的双人 Pong demo，包含左右球拍、球的反弹、边界碰撞、碰撞音效、暂停功能和开始界面。球越过左边界或右边界时本局结束。
 
 ### 操作
 
-| 按键 | 功能 |
+| 操作 | 功能 |
 | --- | --- |
 | `W` / `S` | 左球拍上移 / 下移 |
 | `↑` / `↓` | 右球拍上移 / 下移 |
-| `Space` | 暂停 / 继续 |
-| `G` | 在开始界面开始游戏 |
-| `Esc` | 在开始界面退出 |
+| `Space` | 在开始界面开始游戏；游戏中暂停 / 继续 |
+| 关闭窗口 | 在开始界面退出 |
 
 ### 构建与运行
 
@@ -44,6 +43,7 @@ pkg-config --modversion raylib
 main.cpp              Entrypoint and window loop
 game.cpp / game.h     Game state, input, collisions, rendering
 components/           Paddle, Ball, Line, Velocity
+sounds/               WAV sound effects
 Makefile              Build and run targets
 ```
 
@@ -51,17 +51,16 @@ Makefile              Build and run targets
 
 ### Overview
 
-A two-player Pong demo written in C++17 with raylib 5.5. It includes two paddles, a bouncing ball, boundary collisions, pause support, and a start screen. The round ends when the ball crosses the left or right boundary.
+A two-player Pong demo written in C++17 with raylib 5.5. It includes two paddles, a bouncing ball, boundary collisions, collision sound effects, pause support, and a start screen. The round ends when the ball crosses the left or right boundary.
 
 ### Controls
 
-| Key | Action |
+| Input | Action |
 | --- | --- |
 | `W` / `S` | Move left paddle up / down |
 | `Up` / `Down` | Move right paddle up / down |
-| `Space` | Pause / resume |
-| `G` | Start the game from the start screen |
-| `Esc` | Quit from the start screen |
+| `Space` | Start the game from the start screen; pause / resume in game |
+| Close window | Quit from the start screen |
 
 ### Build and run
 
