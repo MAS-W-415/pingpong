@@ -1,43 +1,45 @@
 # Pingpong
 
-A small Pong demo built with C++17 and [raylib](https://www.raylib.com/).
+English | [简体中文](README.zh-CN.md)
 
-## 中文
+A small two-player Pong demo built with C++17 and [raylib](https://www.raylib.com/).
 
-### 简介
+## Overview
 
-一个使用 C++17 和 raylib 5.5 编写的双人 Pong demo，包含左右球拍、球的反弹、边界碰撞、碰撞音效、暂停功能和开始界面。球越过左边界或右边界时本局结束。
+Pingpong includes two paddles, a bouncing ball, boundary collisions, collision sound effects, pause support, and a start screen. A round ends when the ball crosses the left or right boundary.
 
-### 操作
+## Controls
 
-| 操作 | 功能 |
+| Input | Action |
 | --- | --- |
-| `W` / `S` | 左球拍上移 / 下移 |
-| `↑` / `↓` | 右球拍上移 / 下移 |
-| `Space` | 在开始界面开始游戏；游戏中暂停 / 继续 |
-| 关闭窗口 | 在开始界面退出 |
+| `W` / `S` | Move left paddle up / down |
+| `Up` / `Down` | Move right paddle up / down |
+| `Space` | Start the game from the start screen; pause / resume during a round |
+| `Esc` / close window | Quit from the start screen |
 
-### 构建与运行
+## Requirements
 
-依赖：
-
-- C++17 编译器（`g++`）
+- A C++17 compiler (`g++`)
 - `make`
-- raylib 5.5 开发文件及 `pkg-config` 元数据
-- 图形显示环境
+- raylib 5.5 development files with `pkg-config` metadata
+- A graphical display
+
+## Build and run
 
 ```bash
 make
 make run
 ```
 
-`make` 生成 `./pingpong`，`make clean` 删除它。可以用以下命令检查 raylib 版本：
+`make` builds `./pingpong`; `make clean` removes it. Verify the raylib version with:
 
 ```bash
 pkg-config --modversion raylib
 ```
 
-### 项目结构
+Run the game from the repository root so the relative paths under `sounds/` resolve correctly.
+
+## Project structure
 
 ```text
 main.cpp              Entrypoint and window loop
@@ -45,41 +47,6 @@ game.cpp / game.h     Game state, input, collisions, rendering
 components/           Paddle, Ball, Line, Velocity
 sounds/               WAV sound effects
 Makefile              Build and run targets
-```
-
-## English
-
-### Overview
-
-A two-player Pong demo written in C++17 with raylib 5.5. It includes two paddles, a bouncing ball, boundary collisions, collision sound effects, pause support, and a start screen. The round ends when the ball crosses the left or right boundary.
-
-### Controls
-
-| Input | Action |
-| --- | --- |
-| `W` / `S` | Move left paddle up / down |
-| `Up` / `Down` | Move right paddle up / down |
-| `Space` | Start the game from the start screen; pause / resume in game |
-| Close window | Quit from the start screen |
-
-### Build and run
-
-Requirements:
-
-- A C++17 compiler (`g++`)
-- `make`
-- raylib 5.5 development files with `pkg-config` metadata
-- A graphical display
-
-```bash
-make
-make run
-```
-
-`make` builds `./pingpong`; `make clean` removes it. Check the raylib version with:
-
-```bash
-pkg-config --modversion raylib
 ```
 
 ## License
