@@ -11,6 +11,7 @@
 #include "./components/velocity.h"
 #include "./components/ball.h"
 #include "./components/Line.h"
+#include "./components/collision.h"
 
 #define START_GAME true
 #define EXIT_GAME false

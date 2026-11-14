@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
+#include "raylib.h"
 #include <raylib.h>
 #include <string>
 #include <string_view>
@@ -16,7 +17,8 @@ void Game::Init()
                 (float)windowHeight / 3, (float)windowWidth / 30,
                 (float)windowHeight / 3},
             WHITE, 
-            Velocity(0.0f, 0.0f));
+            Velocity(0.0f, 0.0f),
+            100.0f);
 
     p_right = Paddle(
             Rectangle{
@@ -25,14 +27,16 @@ void Game::Init()
                 (float)windowWidth / 30,
                 (float)windowHeight / 3},
             WHITE, 
-            Velocity(0.0f, 0.0f));
+            Velocity(0.0f, 0.0f),
+            100.0f);
 
     ball = Ball(
             (float)windowWidth / 2,
             (float)windowHeight / 2, 
             (float)windowWidth / 60,
             WHITE, 
-            Velocity(Velocity::MAX_Velocity, 0.0f));
+            Velocity(Velocity::MAX_Velocity, 0.0f),
+            1.0f);
 
     upperBoundary = Line(
             0.0f,
@@ -65,7 +69,7 @@ void Game::Init()
 void Game::Run()
 {
     isPause = true;
-    while(!isEnd)
+    while(!isEnd && !(isPause && IsKeyPressed(KEY_ESCAPE)))
     {
         if(IsKeyPressed(KEY_SPACE))
         {
@@ -129,17 +133,17 @@ void Game::drawBackground()
 void Game::handleKeyboard()
 {
 
-    if((IsKeyUp(KEY_UP) && IsKeyUp(KEY_DOWN)) || p_right.isSTOP > 0.0f)
+    if((IsKeyUp(KEY_UP) && IsKeyUp(KEY_DOWN)))
     {
         p_right.v.speedCut(0.0f, d_acceleration * GetFrameTime());
     }
 
-    if((IsKeyUp(KEY_W) && IsKeyUp(KEY_S)) || p_left.isSTOP > 0.0f)
+    if((IsKeyUp(KEY_W) && IsKeyUp(KEY_S)))
     {
         p_left.v.speedCut(0.0f, d_acceleration * GetFrameTime());
     }
 
-    if(IsKeyDown(KEY_UP) && p_right.isSTOP == 0.0f)
+    if(IsKeyDown(KEY_UP))
     {
         if(p_right.v.vy > 0.0f)
         {
@@ -156,7 +160,7 @@ void Game::handleKeyboard()
         }
     }
 
-    if(IsKeyDown(KEY_DOWN) && p_right.isSTOP == 0.0f)
+    if(IsKeyDown(KEY_DOWN))
     {
         if(p_right.v.vy < 0.0f)
         {
@@ -173,7 +177,7 @@ void Game::handleKeyboard()
         }
     }
 
-    if(IsKeyDown(KEY_W) && p_left.isSTOP == 0.0f)
+    if(IsKeyDown(KEY_W))
     {
         if(p_left.v.vy > 0.0f)
         {
@@ -190,7 +194,7 @@ void Game::handleKeyboard()
         }
     }
 
-    if(IsKeyDown(KEY_S) && p_left.isSTOP == 0.0f)
+    if(IsKeyDown(KEY_S))
     {
         if(p_left.v.vy < 0.0f)
         {
@@ -210,133 +214,25 @@ void Game::handleKeyboard()
 
 void Game::handleCollision()
 {
-    if(
-        CheckCollisionCircleRec(
-            {ball.centerX, ball.centerY},
-            ball.radius,
-            p_right.rec)
-    )
-    {
-        ball.v.vx = -ball.v.vx;
-        ball.v.speedUp(0.0f, p_right.v.vy * collisionFactor);
-        PlaySound(Game::sound_collision_ball2rec);
-    }
 
-    if(
-        CheckCollisionCircleRec(
-            {ball.centerX, ball.centerY},
-            ball.radius,
-            p_left.rec)
-    )
-    {
-        ball.v.vx = -ball.v.vx;
-        ball.v.speedUp(0.0f, p_left.v.vy * collisionFactor);
-        PlaySound(Game::sound_collision_ball2rec);
-    }
+    Collision::ball_with_paddle(ball, p_left);
+    Collision::ball_with_paddle(ball, p_right);
+    Collision::ball_with_line(ball, upperBoundary);
+    Collision::ball_with_line(ball, bottomBoundary);
+    Collision::ball_with_endLine(ball, leftBoundary, isEnd);
+    Collision::ball_with_endLine(ball, rightBoundary, isEnd);
+    Collision::paddle_with_line(p_left, upperBoundary);
+    Collision::paddle_with_line(p_left, bottomBoundary);
+    Collision::paddle_with_line(p_right, upperBoundary);
+    Collision::paddle_with_line(p_right, bottomBoundary);
 
-    if(
-        CheckCollisionCircleLine(
-            {ball.centerX, ball.centerY},
-            ball.radius,
-            {upperBoundary.startPosX, upperBoundary.startPosY},
-            {upperBoundary.endPosX, upperBoundary.endPosY})
-        ||
-        CheckCollisionCircleLine(
-            {ball.centerX, ball.centerY},
-            ball.radius,
-            {bottomBoundary.startPosX, bottomBoundary.startPosY}, 
-            {bottomBoundary.endPosX, bottomBoundary.endPosY})
-    )
-    {
-        ball.v.vy = -ball.v.vy;
-        PlaySound(Game::sound_collision_ball2rec);
-    }
-
-    if(
-        CheckCollisionLines(
-            {p_left.rec.x, p_left.rec.y}, 
-            {p_left.rec.x, p_left.rec.y + p_left.rec.height}, 
-            {upperBoundary.startPosX, upperBoundary.startPosY},
-            {upperBoundary.endPosX, upperBoundary.endPosY},
-            NULL) 
-        || 
-        CheckCollisionLines(
-            {p_left.rec.x, p_left.rec.y}, 
-            {p_left.rec.x, p_left.rec.y + p_left.rec.height}, 
-            {bottomBoundary.startPosX, bottomBoundary.startPosY},
-            {bottomBoundary.endPosX, bottomBoundary.endPosY}, 
-            NULL)
-    )
-    {
-        if(p_left.rec.y < 0.0f)
-        {
-            p_left.rec.y = 1.0f;
-        }
-        if(p_left.rec.y > windowHeight - p_left.rec.height)
-        {
-            p_left.rec.y = windowHeight - p_left.rec.height - 1.0f;
-        }
-        p_left.v.vy = -p_left.v.vy;
-        Stop(&p_left.isSTOP, 0.2f);
-        PlaySound(Game::sound_collision_rec2wall);
-    }
-
-    if(
-        CheckCollisionCircleLine(
-            {ball.centerX, ball.centerY}, 
-            ball.radius, 
-            {leftBoundary.startPosX, leftBoundary.startPosY},
-            {leftBoundary.endPosX, leftBoundary.endPosY}) 
-        || 
-        CheckCollisionCircleLine(
-            {ball.centerX, ball.centerY}, 
-            ball.radius, 
-            {rightBoundary.startPosX, rightBoundary.startPosY},
-            {rightBoundary.endPosX, rightBoundary.endPosY})
-    )
-    {
-        PlaySound(Game::sound_ball_out);
-        isEnd = true;
-    }
-
-    if(
-        CheckCollisionLines(
-            {p_right.rec.x, p_right.rec.y}, 
-            {p_right.rec.x, p_right.rec.y + p_right.rec.height}, 
-            {upperBoundary.startPosX, upperBoundary.startPosY},
-            {upperBoundary.endPosX, upperBoundary.endPosY},
-            NULL) 
-        || 
-        CheckCollisionLines(
-            {p_right.rec.x, p_right.rec.y}, 
-            {p_right.rec.x, p_right.rec.y + p_right.rec.height}, 
-            {bottomBoundary.startPosX, bottomBoundary.startPosY},
-            {bottomBoundary.endPosX, bottomBoundary.endPosY},
-            NULL)
-    )
-    {
-        if(p_right.rec.y < 0.0f)
-        {
-            p_right.rec.y = 1.0f;
-        }
-        if(p_right.rec.y > windowHeight - p_right.rec.height)
-        {
-            p_right.rec.y = windowHeight - p_right.rec.height - 1.0f;
-        }
-        p_right.v.vy = -p_right.v.vy;
-        Stop(&p_right.isSTOP, 0.2f);
-        PlaySound(Game::sound_collision_rec2wall);
-    }
 }
 
 void Game::DoTheMove()
 {
-    p_right.rec.y += p_right.v.vy * GetFrameTime();
-    p_left.rec.y += p_left.v.vy * GetFrameTime();
-    ball.centerX += ball.v.vx * GetFrameTime();
-    ball.centerY += ball.v.vy * GetFrameTime();
-    p_right.isSTOP = std::max(p_right.isSTOP - GetFrameTime(), 0.0f);
-    p_left.isSTOP = std::max(p_left.isSTOP - GetFrameTime(), 0.0f);
+    p_right.Move();
+    p_left.Move();
+    ball.Move();
 }
 
 void Game::Stop(float* target, float time)
@@ -375,7 +271,7 @@ void Game::drawStartPage()
             WHITE
             );
     
-    static int hint_index = 0;
+    static int hint_index= 0;
     if(drawHint(hints[hint_index]) == 0) 
     {
         hint_index = GetRandomValue(0, Game::HintNum - 1);
