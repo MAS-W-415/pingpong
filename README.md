@@ -19,7 +19,7 @@ Pingpong includes two paddles, a bouncing ball, boundary collisions, collision s
 
 ## Requirements
 
-- A C++17 compiler (`g++`)
+- A C++17 compiler (GCC or Clang; the Makefile force-includes the local `raylib.h` overlay)
 - `make`
 - raylib 5.5 development files with `pkg-config` metadata
 - A graphical display
@@ -44,8 +44,9 @@ Run the game from the repository root so the relative paths under `sounds/` reso
 ```text
 main.cpp              Entrypoint and window loop
 game.cpp / game.h     Game state, input, collisions, rendering
-components/           Paddle, Ball, Line, Velocity
+components/           Game entities, collision, input, and sound helpers
 sounds/               WAV sound effects
+raylib.h              Local raylib overlay header
 Makefile              Build and run targets
 ```
 

@@ -19,7 +19,7 @@ Pingpong 包含左右球拍、球的反弹、边界碰撞、碰撞音效、暂�
 
 ## 依赖
 
-- C++17 编译器（`g++`）
+- C++17 编译器（GCC 或 Clang；Makefile 会强制包含本地 `raylib.h` overlay）
 - `make`
 - raylib 5.5 开发文件及 `pkg-config` 元数据
 - 图形显示环境
@@ -44,8 +44,9 @@ pkg-config --modversion raylib
 ```text
 main.cpp              程序入口和窗口循环
 game.cpp / game.h     游戏状态、输入、碰撞和渲染
-components/           Paddle、Ball、Line、Velocity
+components/           游戏实体、碰撞、输入和音效辅助代码
 sounds/               WAV 音效
+raylib.h              本地 raylib overlay 头文件
 Makefile              构建和运行目标
 ```
 
