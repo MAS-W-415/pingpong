@@ -5,6 +5,7 @@
 #include "./paddle.h"
 #include "./Line.h"
 #include "raylib.h"
+#include "sound.h"
 
 class Collision
 {
@@ -12,7 +13,7 @@ class Collision
         inline static float sleep_time = 0.5f;
         //  recovery_coefficient恢复系数（轴向、切向）
         inline static float e_normal= 1.0f;
-        inline static float e_tangent= 1.0f;
+        inline static float e_tangent= -0.0f;
         static void ball_with_paddle(Ball& ball, Paddle& paddle);
         static void ball_with_line(Ball& ball, Line& line);
         static void ball_with_endLine(Ball ball, Line line, bool& key);

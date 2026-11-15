@@ -13,6 +13,7 @@ void Collision::ball_with_endLine(Ball ball, Line line, bool& key)
                 line.getEndPos())
       )
     {
+        PlaySound(SOUND::colli_ballOut);
         key = true;
     }
 }
@@ -20,6 +21,7 @@ void Collision::ball_with_endLine(Ball ball, Line line, bool& key)
 void Collision::paddle_with_line(Paddle& paddle, Line& line)
 {
     Vector2 collision_point;
+    //  check 
     if(MyCheckCollisionRecLine(
                 paddle.rec, 
                 line.getStartPos(),
@@ -28,11 +30,15 @@ void Collision::paddle_with_line(Paddle& paddle, Line& line)
       )
     {
 
+        collision_point.x += GetRandomValue(1, 9) / 10000.0f;
+        collision_point.y += GetRandomValue(1, 9) / 10000.0f;
         Line normal = Line(collision_point, paddle.getCenter());
-        Velocity zero_v = Velocity::ZERO();
+        Velocity zero_v = {0.0f, -paddle.v.vy / 10};
         Collision::Basic_Two_Obj(paddle.mass, paddle.v, line.mass, zero_v, normal);
         //  pos 
         paddle.reMove();
+        //  SOUND
+        PlaySound(SOUND::colli_rec2wall);
         return;
     }
 }
@@ -57,11 +63,15 @@ void Collision::ball_with_line(Ball& ball, Line& line)
             line.startPosY,
             line.endPosY);
         Vector2 collision_point = {closestX, closestY}; 
+        collision_point.x += GetRandomValue(1, 9) / 10000.0f;
+        collision_point.y += GetRandomValue(1, 9) / 10000.0f;
         Line normal = Line(collision_point, ball.getCenter());
-        Velocity zero_v = Velocity::ZERO();
+        Velocity zero_v = {ball.v.vx, 0.0f}; 
         Collision::Basic_Two_Obj(ball.mass, ball.v, line.mass, zero_v, normal);
         //  pos 
         ball.reMove();
+        //  SOUND 
+        PlaySound(SOUND::colli_ball2rec);
         return;
     }
 }
@@ -85,11 +95,15 @@ void Collision::ball_with_paddle(Ball& ball, Paddle& paddle)
             paddle.rec.y,
             paddle.rec.y + paddle.rec.height);
         Vector2 collision_point = {closestX, closestY}; 
+        collision_point.x += GetRandomValue(1, 9) / 10000.0f;
+        collision_point.y += GetRandomValue(1, 9) / 10000.0f;
         Line normal = Line(collision_point, ball.getCenter());
         Collision::Basic_Two_Obj(ball.mass, ball.v, paddle.mass, paddle.v, normal);
         //  pos 
         ball.reMove();
         paddle.reMove();
+        //  SOUND 
+        PlaySound(SOUND::colli_ball2rec);
         return;
     }
 }

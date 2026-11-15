@@ -13,6 +13,10 @@ class Paddle
         Color color;
         Velocity v;
         float mass;
+        inline static float acc = 10000.0f;
+        inline static float d_acc = 1000.0f;
+        inline static float turnBackFactor = 0.5f;
+
 
         Paddle(Rectangle rec, Color c, Velocity v, float m) 
             : rec(rec), color(c), v(v), mass(m){;};
@@ -23,6 +27,9 @@ class Paddle
         Line getBoundaryLine(const std::string direction);
         void Move();
         void reMove();
+        void goUP();
+        void goDown();
+        void slowDown();
 
 };
 

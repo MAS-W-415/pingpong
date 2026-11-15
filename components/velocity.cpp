@@ -57,5 +57,5 @@ Velocity Velocity::change_basis2XY(float v_n, float v_t, Line normal)
     float dnx = normal.endPosX - normal.startPosX;
     float dny = normal.endPosY - normal.startPosY;
     float Ln = sqrtf(dnx * dnx + dny * dny);
-    return {(v_t * dny + v_n * dnx) / Ln, (-v_t * dnx + v_n * dny) / Ln};
+    return {(-v_t * dny + v_n * dnx) / Ln, (v_t * dnx + v_n * dny) / Ln};
 }

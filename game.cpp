@@ -2,7 +2,9 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
+#include "components/sound.h"
 #include "raylib.h"
+#include <functional>
 #include <raylib.h>
 #include <string>
 #include <string_view>
@@ -91,6 +93,7 @@ void Game::Run()
 
 void Game::drawItems()
 {
+
     DrawRectangleRec(p_right.rec, p_right.color);
     DrawRectangleRec(p_left.rec, p_left.color);
 
@@ -132,84 +135,35 @@ void Game::drawBackground()
 
 void Game::handleKeyboard()
 {
-
-    if((IsKeyUp(KEY_UP) && IsKeyUp(KEY_DOWN)))
+    if(IsKeyUp(UP.name) && IsKeyUp(DOWN.name))
     {
-        p_right.v.speedCut(0.0f, d_acceleration * GetFrameTime());
+        p_right.slowDown();
     }
 
-    if((IsKeyUp(KEY_W) && IsKeyUp(KEY_S)))
+    if(IsKeyUp(W.name) && IsKeyUp(S.name))
     {
-        p_left.v.speedCut(0.0f, d_acceleration * GetFrameTime());
+        p_left.slowDown();
     }
 
-    if(IsKeyDown(KEY_UP))
-    {
-        if(p_right.v.vy > 0.0f)
-        {
-            p_right.v.vy = p_right.v.vy * turnBackFactor;
-            p_right.v.speedCut(0.0f, d_acceleration * GetFrameTime());
-        }
-        else if(p_right.v.vy == 0.0f)
-        {
-            p_right.v.vy -= 0.1f;
-        }
-        else 
-        {
-            p_right.v.speedUp(0.0f, acceleration * GetFrameTime());
-        }
-    }
+    UP.Press([this]()
+            {
+                p_right.goUP();
+            });
 
-    if(IsKeyDown(KEY_DOWN))
-    {
-        if(p_right.v.vy < 0.0f)
-        {
-            p_right.v.vy = p_right.v.vy * turnBackFactor;
-            p_right.v.speedCut(0.0f, d_acceleration * GetFrameTime());
-        }
-        else if(p_right.v.vy == 0.0f)
-        {
-            p_right.v.vy += 0.1f;
-        }
-        else 
-        {
-            p_right.v.speedUp(0.0f, acceleration * GetFrameTime());
-        }
-    }
+    DOWN.Press([this]()
+            {
+                p_right.goDown();
+            });
 
-    if(IsKeyDown(KEY_W))
-    {
-        if(p_left.v.vy > 0.0f)
-        {
-            p_left.v.vy = p_left.v.vy * turnBackFactor;
-            p_left.v.speedCut(0.0f, d_acceleration * GetFrameTime());
-        }
-        else if(p_left.v.vy == 0.0f)
-        {
-            p_left.v.vy -= 0.1f;
-        }
-        else
-        {
-            p_left.v.speedUp(0.0f, acceleration * GetFrameTime());
-        }
-    }
+    W.Press([this]()
+            {
+                p_left.goUP();
+            });
 
-    if(IsKeyDown(KEY_S))
-    {
-        if(p_left.v.vy < 0.0f)
-        {
-            p_left.v.vy = p_left.v.vy * turnBackFactor;
-            p_left.v.speedCut(0.0f, d_acceleration * GetFrameTime());
-        }
-        else if(p_left.v.vy == 0.0f)
-        {
-            p_left.v.vy += 0.1f;
-        }
-        else
-        {
-            p_left.v.speedUp(0.0f, acceleration * GetFrameTime());
-        }
-    }
+    S.Press([this]()
+            {
+                p_left.goDown();
+            });
 }
 
 void Game::handleCollision()
@@ -235,10 +189,6 @@ void Game::DoTheMove()
     ball.Move();
 }
 
-void Game::Stop(float* target, float time)
-{
-    (*target) += time;
-}
 
 int Game::StartPage()
 {
@@ -280,26 +230,17 @@ void Game::drawStartPage()
 
 void Game::endGame()
 {
-    UnloadAnySound();
+    SOUND::unload();
     CloseAudioDevice();
     CloseWindow();
 }
 
-void Game::UnloadAnySound()
-{
-    UnloadSound(Game::sound_collision_ball2rec);
-    UnloadSound(Game::sound_collision_rec2wall);
-    UnloadSound(Game::sound_ball_out);
-}
 
 void Game::BasicSet()
 {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
     InitWindow(windowWidth, windowHeight, windowName.data());
-    InitAudioDevice();
-    Game::sound_collision_ball2rec = LoadSound("./sounds/random.wav");
-    Game::sound_collision_rec2wall = LoadSound("./sounds/explosion.wav");
-    Game::sound_ball_out = LoadSound("./sounds/random (1).wav");
+    SOUND::init();
 }
 
 bool Game::drawHint(const std::string_view& hint)

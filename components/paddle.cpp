@@ -45,3 +45,42 @@ void Paddle::reMove()
 {
     this->rec = this->old_rec;
 }
+
+void Paddle::goUP()
+{
+    if(this->v.vy > 0.0f)
+    {
+        this->v.vy = this->v.vy * turnBackFactor;
+        this->v.speedCut(0.0f, this->d_acc * GetFrameTime());
+    }
+    else if(this->v.vy == 0.0f)
+    {
+        this->v.vy -= 0.1f;
+    }
+    else 
+    {
+        this->v.speedUp(0.0f, this->acc * GetFrameTime());
+    }
+}
+
+void Paddle::slowDown()
+{
+    this->v.speedCut(0.0f, this->d_acc * GetFrameTime());
+}
+
+void Paddle::goDown()
+{
+    if(this->v.vy < 0.0f)
+    {
+        this->v.vy = this->v.vy * turnBackFactor;
+        this->v.speedCut(0.0f, this->d_acc * GetFrameTime());
+    }
+    else if(this->v.vy == 0.0f)
+    {
+        this->v.vy += 0.1f;
+    }
+    else 
+    {
+        this->v.speedUp(0.0f, this->acc * GetFrameTime());
+    }
+}

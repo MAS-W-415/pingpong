@@ -4,6 +4,7 @@
 #include <array>
 #include <cstdint>
 #include <ctime>
+#include <raylib.h>
 #include <string>
 #include <string_view>
 #include "raylib.h"
@@ -12,6 +13,8 @@
 #include "./components/ball.h"
 #include "./components/Line.h"
 #include "./components/collision.h"
+#include "./components/sound.h"
+#include "./components/Key.h"
 
 #define START_GAME true
 #define EXIT_GAME false
@@ -36,14 +39,7 @@ class Game
             "press space to start game",
             "press ESC to exit game"
         };
-        inline static Sound sound_collision_ball2rec;
-        inline static Sound sound_collision_rec2wall;
-        inline static Sound sound_ball_out;
 
-        float acceleration = 1000.0f;
-        float d_acceleration = 1000.0f;
-        float turnBackFactor = 0.5f;
-        float collisionFactor = 0.5f;
 
         Paddle p_left; 
         Paddle p_right;
@@ -52,6 +48,10 @@ class Game
         Line bottomBoundary;
         Line leftBoundary;
         Line rightBoundary;
+        Key UP = Key(KEY_UP);
+        Key DOWN = Key(KEY_DOWN);
+        Key W = Key(KEY_W);
+        Key S = Key(KEY_S);
 
     public:
         Game(){;}
@@ -71,11 +71,7 @@ class Game
         void handleKeyboard();
         void handleCollision();
         void DoTheMove();
-        //  time for seconds
-        void Stop(float* target, float time);
 
-        void UnloadAnySound();
-        void loadEverySound();
 
 
 
