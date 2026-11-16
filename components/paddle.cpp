@@ -36,6 +36,12 @@ Line Paddle::getBoundaryLine(const std::string direction)
 
 void Paddle::Move()
 {
+    if(this->isNeedRemove)
+    {
+        this->isNeedRemove = false;
+        this->reMove();
+        return;
+    }
     this->old_rec = this->rec;
     //    this->rec.x += this->v.vx * GetFrameTime();
     this->rec.y += this->v.vy * GetFrameTime();

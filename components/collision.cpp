@@ -5,7 +5,7 @@
 
 void Collision::ball_with_endLine(Ball ball, Line line, bool& key)
 {
-    //  check
+    //  check 
     if(CheckCollisionCircleLine(
                 ball.getCenter(),
                 ball.radius,
@@ -22,6 +22,10 @@ void Collision::paddle_with_line(Paddle& paddle, Line& line)
 {
     Vector2 collision_point;
     //  check 
+    if(paddle.isNeedRemove)
+    {
+        return;
+    }
     if(MyCheckCollisionRecLine(
                 paddle.rec, 
                 line.getStartPos(),
@@ -36,7 +40,7 @@ void Collision::paddle_with_line(Paddle& paddle, Line& line)
         Velocity zero_v = {0.0f, -paddle.v.vy / 10};
         Collision::Basic_Two_Obj(paddle.mass, paddle.v, line.mass, zero_v, normal);
         //  pos 
-        paddle.reMove();
+        paddle.isNeedRemove = true;
         //  SOUND
         PlaySound(SOUND::colli_rec2wall);
         return;
@@ -46,6 +50,10 @@ void Collision::paddle_with_line(Paddle& paddle, Line& line)
 void Collision::ball_with_line(Ball& ball, Line& line)
 {
     //  check
+    if(ball.isNeedRemove)
+    {
+        return;
+    }
     if(CheckCollisionCircleLine(
                 ball.getCenter(),
                 ball.radius,
@@ -69,7 +77,7 @@ void Collision::ball_with_line(Ball& ball, Line& line)
         Velocity zero_v = {ball.v.vx, 0.0f}; 
         Collision::Basic_Two_Obj(ball.mass, ball.v, line.mass, zero_v, normal);
         //  pos 
-        ball.reMove();
+        ball.isNeedRemove = true;
         //  SOUND 
         PlaySound(SOUND::colli_ball2rec);
         return;
@@ -79,6 +87,10 @@ void Collision::ball_with_line(Ball& ball, Line& line)
 void Collision::ball_with_paddle(Ball& ball, Paddle& paddle)
 {
     //  check
+    if(ball.isNeedRemove || paddle.isNeedRemove)
+    {
+        return;
+    }
     if(CheckCollisionCircleRec(
                 ball.getCenter(),
                 ball.radius,
@@ -100,8 +112,8 @@ void Collision::ball_with_paddle(Ball& ball, Paddle& paddle)
         Line normal = Line(collision_point, ball.getCenter());
         Collision::Basic_Two_Obj(ball.mass, ball.v, paddle.mass, paddle.v, normal);
         //  pos 
-        ball.reMove();
-        paddle.reMove();
+        ball.isNeedRemove = true;
+        paddle.isNeedRemove = true;
         //  SOUND 
         PlaySound(SOUND::colli_ball2rec);
         return;

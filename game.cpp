@@ -80,8 +80,8 @@ void Game::Run()
         if(!isPause)
         {
             handleKeyboard();
-            DoTheMove();
             handleCollision();
+            DoTheMove();
         }
 
         BeginDrawing();

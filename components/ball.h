@@ -18,6 +18,8 @@ class Ball
         Velocity v;
         float mass;
 
+        bool isNeedRemove = false;
+
         Ball(float x, float y, float r, Color c, Velocity v, float m)
             : centerX(x), centerY(y), radius(r), color(c), v(v), mass(m) {;};
         Ball(float x, float y, float r) : centerX(x), centerY(y), radius(r) {;};
@@ -25,6 +27,8 @@ class Ball
         ~Ball() = default;
         Vector2 getCenter(){return {centerX, centerY};}
         void Move();
+
+    private:
         void reMove();
 
 };
