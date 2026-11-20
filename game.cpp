@@ -12,6 +12,7 @@
 void Game::Init()
 {
     isEnd = false;
+    isPause = false;
 
     p_left = Paddle(
             Rectangle{
@@ -39,7 +40,7 @@ void Game::Init()
     ball = Ball(
             (float)windowWidth / 2,
             (float)windowHeight / 2, 
-            (float)windowWidth / 60,
+            (float)windowWidth / 40,
             WHITE, 
             Velocity(Velocity::MAX_Velocity, 0.0f),
             1.0f,
@@ -79,34 +80,40 @@ void Game::Init()
 
 void Game::Run()
 {
-    isPause = true;
-    while(!isEnd && !(isPause && IsKeyPressed(KEY_ESCAPE)))
+    while(!endSign())
     {
-        if(IsKeyPressed(KEY_SPACE))
-        {
-            isPause = !isPause;
-        }
-        if(!isPause)
+        if(!isPause && isAllAlive())
         {
             handleKeyboard();
             handleCollision();
             DoTheMove();
+            BeginDrawing();
+                drawBackground();
+                drawItems();
+            EndDrawing();
         }
-
-        BeginDrawing();
-            drawBackground();
-            drawItems();
-        EndDrawing();
+        if(isPause)
+        {
+            BeginDrawing();
+                drawBackground();
+                drawItems();
+                drawHint(hints[1]);
+            EndDrawing();
+            if(ball->asset.first == "ball.idle")
+            {
+                ball.reset();
+            }
+        }
     }
 }
 
 void Game::drawItems()
 {
 
-    p_right.drawAsset(tex);
-    p_left.drawAsset(tex);
+    if(p_right) {p_right->drawAsset(tex);};
+    if(p_left) {p_left->drawAsset(tex);};
+    if(ball) {ball->drawAsset(tex);};
 
-    ball.drawAsset(tex);
 
     DrawLine(upperBoundary.startPosX,
             upperBoundary.startPosY,
@@ -150,56 +157,54 @@ void Game::handleKeyboard()
 {
     if(IsKeyUp(UP.name) && IsKeyUp(DOWN.name))
     {
-        p_right.slowDown();
+        p_right->slowDown();
     }
 
     if(IsKeyUp(W.name) && IsKeyUp(S.name))
     {
-        p_left.slowDown();
+        p_left->slowDown();
     }
 
     UP.Press([this]()
             {
-                p_right.goUP();
+                p_right->goUP();
             });
 
     DOWN.Press([this]()
             {
-                p_right.goDown();
+                p_right->goDown();
             });
 
     W.Press([this]()
             {
-                p_left.goUP();
+                p_left->goUP();
             });
 
     S.Press([this]()
             {
-                p_left.goDown();
+                p_left->goDown();
             });
 }
 
 void Game::handleCollision()
 {
-
-    Collision::ball_with_paddle(ball, p_left);
-    Collision::ball_with_paddle(ball, p_right);
-    Collision::ball_with_line(ball, upperBoundary);
-    Collision::ball_with_line(ball, bottomBoundary);
-    Collision::ball_with_endLine(ball, leftBoundary, isEnd);
-    Collision::ball_with_endLine(ball, rightBoundary, isEnd);
-    Collision::paddle_with_line(p_left, upperBoundary);
-    Collision::paddle_with_line(p_left, bottomBoundary);
-    Collision::paddle_with_line(p_right, upperBoundary);
-    Collision::paddle_with_line(p_right, bottomBoundary);
-
+    Collision::ball_with_paddle(ball.value(), p_left.value(), isPause);
+    Collision::ball_with_paddle(ball.value(), p_right.value(), isPause);
+    Collision::ball_with_line(ball.value(), upperBoundary, isPause);
+    Collision::ball_with_line(ball.value(), bottomBoundary, isPause);
+    Collision::ball_with_endLine(ball.value(), leftBoundary, isPause);
+    Collision::ball_with_endLine(ball.value(), rightBoundary, isPause);
+    Collision::paddle_with_line(p_left.value(), upperBoundary, isPause);
+    Collision::paddle_with_line(p_left.value(), bottomBoundary, isPause);
+    Collision::paddle_with_line(p_right.value(), upperBoundary, isPause);
+    Collision::paddle_with_line(p_right.value(), bottomBoundary, isPause);
 }
 
 void Game::DoTheMove()
 {
-    p_right.Move();
-    p_left.Move();
-    ball.Move();
+    p_right->Move();
+    p_left->Move();
+    ball->Move();
 }
 
 
@@ -231,7 +236,7 @@ void Game::drawStartPage()
             (windowWidth - name_width) / 2, 
             windowHeight / 3, 
             NameSize,
-            WHITE
+            BLACK 
             );
     
     static int hint_index= 0;
@@ -268,7 +273,17 @@ bool Game::drawHint(const std::string_view& hint)
             (windowWidth - hint_width) / 2, 
             2 * windowHeight / 3, 
             HintSize,
-            Fade(WHITE, alpha)
+            Fade(BLACK, alpha)
             );
     return alpha != 0.0;
+}
+
+bool Game::endSign()
+{
+    return isEnd | (isPause & IsKeyReleased(KEY_ESCAPE));
+}
+
+bool Game::isAllAlive()
+{
+    return ball && p_left && p_right;
 }

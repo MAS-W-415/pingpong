@@ -4,7 +4,7 @@
 #include <algorithm>
 #include "raylib.h"
 
-void Collision::ball_with_endLine(Ball& ball, Line line, bool& key)
+void Collision::ball_with_endLine(Ball& ball, Line& line, bool& key)
 {
     //  check 
     if(CheckCollisionCircleLine(
@@ -16,11 +16,11 @@ void Collision::ball_with_endLine(Ball& ball, Line line, bool& key)
     {
         PlaySound(SOUND::colli_ballOut);
         ball.asset = {"ball.pop", assetMap.at("ball.pop")};
-        //  key = true;
+        key = true;
     }
 }
 
-void Collision::paddle_with_line(Paddle& paddle, Line& line)
+void Collision::paddle_with_line(Paddle& paddle, Line& line, bool& key)
 {
     Vector2 collision_point;
     //  check 
@@ -49,7 +49,7 @@ void Collision::paddle_with_line(Paddle& paddle, Line& line)
     }
 }
 
-void Collision::ball_with_line(Ball& ball, Line& line)
+void Collision::ball_with_line(Ball& ball, Line& line, bool& key)
 {
     //  check
     if(ball.isNeedRemove)
@@ -64,9 +64,10 @@ void Collision::ball_with_line(Ball& ball, Line& line)
             )
     {
         //  multiCollision
-        if(ball.pre_state == true)
+        if(ball.pre_state > 0)
         {
             ball.multiCollision();
+            key = true;
             return;
         }
         //  velocity 
@@ -92,7 +93,7 @@ void Collision::ball_with_line(Ball& ball, Line& line)
     }
 }
 
-void Collision::ball_with_paddle(Ball& ball, Paddle& paddle)
+void Collision::ball_with_paddle(Ball& ball, Paddle& paddle, bool& key)
 {
     //  check
     if(ball.isNeedRemove || paddle.isNeedRemove)
@@ -105,6 +106,13 @@ void Collision::ball_with_paddle(Ball& ball, Paddle& paddle)
                 paddle.form.rec)
             )
     {
+        //  multiCollision
+        if(ball.pre_state > 0)
+        {
+            ball.multiCollision();
+            key = true;
+            return;
+        }
         //  velocity 
         float closestX = std::clamp(
             ball.form.pos.x,

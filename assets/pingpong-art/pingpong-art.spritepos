@@ -27,6 +27,6 @@ pop_8 195 516 64 64
 [animations]
 ball.idle 8 loop bubble_1 bubble_2 bubble_3 bubble_4
 ball.trail 8 loop trail_1 trail_2 trail_3 trail_4
-ball.pop 13 once pop_1 pop_2 pop_3 pop_4 pop_5 pop_6 pop_7 pop_8
+ball.pop 8 once pop_1 pop_2 pop_3 pop_4 pop_5 pop_6 pop_7 pop_8
 paddle.idle 8 loop cloud_idle
 paddle.hit 8 once cloud_hit

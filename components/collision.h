@@ -6,6 +6,7 @@
 #include "./Line.h"
 #include "raylib.h"
 #include "sound.h"
+#include <cinttypes>
 
 class Collision
 {
@@ -14,10 +15,10 @@ class Collision
         //  recovery_coefficient恢复系数（轴向、切向）
         inline static float e_normal= 1.0f;
         inline static float e_tangent= -0.0f;
-        static void ball_with_paddle(Ball& ball, Paddle& paddle);
-        static void ball_with_line(Ball& ball, Line& line);
-        static void ball_with_endLine(Ball& ball, Line line, bool& key);
-        static void paddle_with_line(Paddle& paddle, Line& line);
+        static void ball_with_paddle(Ball& ball, Paddle& paddle, bool& key);
+        static void ball_with_line(Ball& ball, Line& line, bool& key);
+        static void ball_with_endLine(Ball& ball, Line& line, bool& key);
+        static void paddle_with_line(Paddle& paddle, Line& line, bool& key);
 
     private:
         static void Basic_Two_Obj(const float& m1, Velocity& v1, 

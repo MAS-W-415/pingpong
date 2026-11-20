@@ -41,9 +41,9 @@ class Game
         };
 
 
-        Paddle p_left; 
-        Paddle p_right;
-        Ball ball;
+        std::optional<Paddle> p_left; 
+        std::optional<Paddle> p_right;
+        std::optional<Ball> ball;
         Line upperBoundary;
         Line bottomBoundary;
         Line leftBoundary;
@@ -72,6 +72,8 @@ class Game
         void handleKeyboard();
         void handleCollision();
         void DoTheMove();
+        bool endSign();
+        bool isAllAlive();
 
 
 

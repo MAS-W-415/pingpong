@@ -7,7 +7,7 @@ void Object<T>::Move()
     //  check remove 
     if(isNeedRemove)
     {
-        pre_state = isNeedRemove;
+        pre_state = 3;
         isNeedRemove = false;
         reMove();
         return;
@@ -16,7 +16,7 @@ void Object<T>::Move()
     old_form = form;
     //  do the move 
     move_p();
-    pre_state = isNeedRemove;
+    --pre_state;
 }
 
 template <typename T>

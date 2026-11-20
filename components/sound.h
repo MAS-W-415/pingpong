@@ -13,9 +13,9 @@ class SOUND
         void static init()
         {
             InitAudioDevice();
-            colli_ball2rec = LoadSound("./sounds/ball2rec.wav");
-            colli_rec2wall = LoadSound("./sounds/rec2wall.wav");
-            colli_ballOut = LoadSound("./sounds/ballOut.wav");
+            colli_ball2rec = LoadSound("sounds/bounce.wav");
+            colli_rec2wall = LoadSound("sounds/paddle2wall.wav");
+            colli_ballOut = LoadSound("sounds/pop.wav");
         }
 
         void static unload()

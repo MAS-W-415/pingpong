@@ -21,7 +21,7 @@ class Object
         Velocity v;
         float mass;
         bool isNeedRemove = false;
-        bool pre_state = false;
+        int pre_state = 0;
         std::pair<std::string, _Asset> asset;
         std::pair<std::string, _Asset> old_asset;
 
