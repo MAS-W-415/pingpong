@@ -20,7 +20,9 @@ void Game::Init()
                 (float)windowHeight / 3},
             WHITE, 
             Velocity(0.0f, 0.0f),
-            100.0f);
+            100.0f,
+            "paddle.idle",
+            assetMap.at("paddle.idle"));
 
     p_right = Paddle(
             Rectangle{
@@ -30,7 +32,9 @@ void Game::Init()
                 (float)windowHeight / 3},
             WHITE, 
             Velocity(0.0f, 0.0f),
-            100.0f);
+            100.0f,
+            "paddle.idle",
+            assetMap.at("paddle.idle"));
 
     ball = Ball(
             (float)windowWidth / 2,
@@ -38,7 +42,9 @@ void Game::Init()
             (float)windowWidth / 60,
             WHITE, 
             Velocity(Velocity::MAX_Velocity, 0.0f),
-            1.0f);
+            1.0f,
+            "ball.idle",
+            assetMap.at("ball.idle"));
 
     upperBoundary = Line(
             0.0f,
@@ -66,6 +72,9 @@ void Game::Init()
             (float)windowWidth,
             (float)windowHeight, 
             WHITE);
+
+
+
 };
 
 void Game::Run()
@@ -94,14 +103,10 @@ void Game::Run()
 void Game::drawItems()
 {
 
-    DrawRectangleRec(p_right.rec, p_right.color);
-    DrawRectangleRec(p_left.rec, p_left.color);
+    p_right.drawAsset(tex);
+    p_left.drawAsset(tex);
 
-    DrawCircleLines(
-            ball.centerX,
-            ball.centerY,
-            ball.radius,
-            ball.color);
+    ball.drawAsset(tex);
 
     DrawLine(upperBoundary.startPosX,
             upperBoundary.startPosY,
@@ -131,6 +136,14 @@ void Game::drawItems()
 void Game::drawBackground()
 {
     ClearBackground(BLACK);
+    DrawTexturePro(
+            tex,
+            Rectangle{260, 0, 800, 600},
+            Rectangle{0, 0, windowWidth, windowHeight},
+            {0, 0},
+            0.0f,
+            WHITE
+            );
 }
 
 void Game::handleKeyboard()
@@ -233,6 +246,7 @@ void Game::endGame()
     SOUND::unload();
     CloseAudioDevice();
     CloseWindow();
+    UnloadTexture(tex);
 }
 
 
@@ -241,6 +255,7 @@ void Game::BasicSet()
     SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
     InitWindow(windowWidth, windowHeight, windowName.data());
     SOUND::init();
+    tex = LoadTexture("./assets/pingpong-art/pingpong-art.png");
 }
 
 bool Game::drawHint(const std::string_view& hint)

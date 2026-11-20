@@ -1,0 +1,32 @@
+[meta]
+version 1
+texture pingpong-art.png
+sheet 1060 600
+
+[frames]
+background 260 0 800 600
+bubble_1 0 0 64 64
+bubble_2 65 0 64 64
+bubble_3 130 0 64 64
+bubble_4 195 0 64 64
+trail_1 0 65 60 24
+trail_2 61 65 60 24
+trail_3 122 65 60 24
+trail_4 183 65 60 24
+cloud_idle 81 90 48 360
+cloud_hit 130 90 48 360
+pop_1 0 451 64 64
+pop_2 65 451 64 64
+pop_3 130 451 64 64
+pop_4 195 451 64 64
+pop_5 0 516 64 64
+pop_6 65 516 64 64
+pop_7 130 516 64 64
+pop_8 195 516 64 64
+
+[animations]
+ball.idle 8 loop bubble_1 bubble_2 bubble_3 bubble_4
+ball.trail 8 loop trail_1 trail_2 trail_3 trail_4
+ball.pop 13 once pop_1 pop_2 pop_3 pop_4 pop_5 pop_6 pop_7 pop_8
+paddle.idle 8 loop cloud_idle
+paddle.hit 8 once cloud_hit

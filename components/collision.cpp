@@ -1,20 +1,22 @@
 #include "./collision.h"
+#include "Assets.h"
 #include "Line.h"
 #include <algorithm>
 #include "raylib.h"
 
-void Collision::ball_with_endLine(Ball ball, Line line, bool& key)
+void Collision::ball_with_endLine(Ball& ball, Line line, bool& key)
 {
     //  check 
     if(CheckCollisionCircleLine(
                 ball.getCenter(),
-                ball.radius,
+                ball.form.radius,
                 line.getStartPos(),
                 line.getEndPos())
       )
     {
         PlaySound(SOUND::colli_ballOut);
-        key = true;
+        ball.asset = {"ball.pop", assetMap.at("ball.pop")};
+        //  key = true;
     }
 }
 
@@ -27,7 +29,7 @@ void Collision::paddle_with_line(Paddle& paddle, Line& line)
         return;
     }
     if(MyCheckCollisionRecLine(
-                paddle.rec, 
+                paddle.form.rec, 
                 line.getStartPos(),
                 line.getEndPos(),
                 collision_point)
@@ -56,18 +58,24 @@ void Collision::ball_with_line(Ball& ball, Line& line)
     }
     if(CheckCollisionCircleLine(
                 ball.getCenter(),
-                ball.radius,
+                ball.form.radius,
                 line.getStartPos(),
                 line.getEndPos())
             )
     {
+        //  multiCollision
+        if(ball.pre_state == true)
+        {
+            ball.multiCollision();
+            return;
+        }
         //  velocity 
         float closestX = std::clamp(
-            ball.centerX,
+            ball.form.pos.x,
             line.startPosX,
             line.endPosX);
         float closestY = std::clamp(
-            ball.centerY,
+            ball.form.pos.y,
             line.startPosY,
             line.endPosY);
         Vector2 collision_point = {closestX, closestY}; 
@@ -93,19 +101,19 @@ void Collision::ball_with_paddle(Ball& ball, Paddle& paddle)
     }
     if(CheckCollisionCircleRec(
                 ball.getCenter(),
-                ball.radius,
-                paddle.rec)
+                ball.form.radius,
+                paddle.form.rec)
             )
     {
         //  velocity 
         float closestX = std::clamp(
-            ball.centerX,
-            paddle.rec.x,
-            paddle.rec.x + paddle.rec.width);
+            ball.form.pos.x,
+            paddle.form.rec.x,
+            paddle.form.rec.x + paddle.form.rec.width);
         float closestY = std::clamp(
-            ball.centerY,
-            paddle.rec.y,
-            paddle.rec.y + paddle.rec.height);
+            ball.form.pos.y,
+            paddle.form.rec.y,
+            paddle.form.rec.y + paddle.form.rec.height);
         Vector2 collision_point = {closestX, closestY}; 
         collision_point.x += GetRandomValue(1, 9) / 10000.0f;
         collision_point.y += GetRandomValue(1, 9) / 10000.0f;
@@ -116,6 +124,8 @@ void Collision::ball_with_paddle(Ball& ball, Paddle& paddle)
         paddle.isNeedRemove = true;
         //  SOUND 
         PlaySound(SOUND::colli_ball2rec);
+        //  asset 
+        paddle.asset = {"paddle.hit", assetMap.at("paddle.hit")};
         return;
     }
 }

@@ -48,6 +48,7 @@ class Game
         Line bottomBoundary;
         Line leftBoundary;
         Line rightBoundary;
+        Texture tex;
         Key UP = Key(KEY_UP);
         Key DOWN = Key(KEY_DOWN);
         Key W = Key(KEY_W);

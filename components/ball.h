@@ -5,31 +5,26 @@
 
 #include "raylib.h"
 #include "velocity.h"
+#include "Object.h" 
+#include <optional>
+#include <vector>
 
-class Ball 
+class Ball : public Object<CIRCLE>
 {
     public:
-        float centerX;
-        float centerY;
-        float old_x;
-        float old_y;
-        float radius;
-        Color color;
-        Velocity v;
-        float mass;
-
-        bool isNeedRemove = false;
-
-        Ball(float x, float y, float r, Color c, Velocity v, float m)
-            : centerX(x), centerY(y), radius(r), color(c), v(v), mass(m) {;};
-        Ball(float x, float y, float r) : centerX(x), centerY(y), radius(r) {;};
+        Ball(float x, float y, float r, Color c, Velocity v, float m,
+                const std::string& name, const _Asset& asset) :
+            Object<CIRCLE>(CIRCLE{x, y ,r}, c, v, m, name, asset) {;}
+        Ball(float x, float y, float r) : Object<CIRCLE>(CIRCLE{x, y, r}) {;};
         Ball(){;}
         ~Ball() = default;
-        Vector2 getCenter(){return {centerX, centerY};}
-        void Move();
+        Vector2 getCenter() override {return {form.pos.x, form.pos.y};}
+        void multiCollision();
 
     private:
-        void reMove();
+        void move_p() override;
+        Rectangle getRec() override;
+
 
 };
 

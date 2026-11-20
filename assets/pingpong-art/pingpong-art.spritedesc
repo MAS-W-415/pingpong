@@ -1,0 +1,84 @@
+sprite_sheet "pingpong-art" 1060 x 600 margin 1
+
+machine_manifest "pingpong-art.spritepos" whitespace [meta]/[frames]/[animations]
+manifest_frame "name x y w h"
+manifest_animation "name fps loop|once frame1 frame2 ..."
+
+image "pingpong-art.png"
+format RGBA
+alpha "straight alpha, 8-bit per channel"
+background transparent
+origin top-left (0, 0)
+categories "background", "ball-bubble", "bubble-pop", "paddle-cloud"
+source "build.py - deterministic Pillow raster art, no external images"
+
+Sheet size: 1060 x 600 px
+Margin: 1 px transparent gutters between adjacent sprite frames. The single
+background frame is fully opaque; all sprite frames and every area outside the
+listed frame rectangles are transparent.
+
+Frame table
+-----------
+name          x     y     w     h    category
+background    260   0     800   600  background
+bubble_1      0     0     64    64   ball-bubble
+bubble_2      65    0     64    64   ball-bubble
+bubble_3      130   0     64    64   ball-bubble
+bubble_4      195   0     64    64   ball-bubble
+trail_1       0     65    60    24   ball-bubble
+trail_2       61    65    60    24   ball-bubble
+trail_3       122   65    60    24   ball-bubble
+trail_4       183   65    60    24   ball-bubble
+cloud_idle    81    90    48    360  paddle-cloud
+cloud_hit     130   90    48    360  paddle-cloud
+pop_1         0     451   64    64   bubble-pop
+pop_2         65    451   64    64   bubble-pop
+pop_3         130   451   64    64   bubble-pop
+pop_4         195   451   64    64   bubble-pop
+pop_5         0     516   64    64   bubble-pop
+pop_6         65    516   64    64   bubble-pop
+pop_7         130   516   64    64   bubble-pop
+pop_8         195   516   64    64   bubble-pop
+
+Layout notes
+------------
+- The 259 x 450 ball/paddle block occupies x=0..258, y=0..449. Its frame
+  rectangles, gutters and coordinates are unchanged from the original pack;
+  the contrast revision updates only pixels and descriptive text. The
+  background remains appended on the right, so every existing ball/paddle
+  source rectangle stays valid exactly as before.
+- x=259 is a 1 px fully transparent vertical gutter between the sprite sheet
+  and the background.
+- The background frame starts at x=260 and covers y=0..599 (800 x 600). It is
+  fully opaque (alpha 255 everywhere).
+- The bubble-pop block occupies the formerly empty area x=0..258, y=451..579.
+  It is two rows of four 64x64 frames in play order: pops 1-4 at y=451 and
+  pops 5-8 at y=516, at x=0, 65, 130 and 195. The 1 px separator rows y=450
+  and y=515 and the 1 px gutters x=64, 129 and 194 are fully transparent.
+- The area below the pop block, x=0..258, y=580..599, is fully transparent.
+- Row 1, y=0: four 64x64 bubble frames at x=0, 65, 130 and 195, separated by
+  1 px transparent gutters at x=64, 129 and 194.
+- Row 2, y=65: four 60x24 trail frames at x=0, 61, 122 and 183, separated by
+  1 px transparent gutters at x=60, 121 and 182. The 16 px tail at
+  x=243..258 is transparent.
+- y=89 is a fully transparent separator row between the bubble block and the
+  paddle block.
+- Row 3, y=90: two 48x360 paddle frames. The 97 px-wide pair is horizontally
+  centered: cloud_idle at x=81, a 1 px gutter at x=129, cloud_hit at x=130.
+  The unused sides (x=0..80 and x=178..258) are transparent.
+- Every sprite frame keeps at least 2 px of transparent content margin inside
+  its frame box. The background is full-bleed and intentionally has no margin.
+- All areas outside the listed frame rectangles are transparent.
+- Contrast revision: the background uses a deeper periwinkle play band, soft
+  blue paddle-lane shading and blue-lavender cloud shadows; the bubble and
+  cloud frames carry stronger blue rims. Every original frame rectangle above
+  is unchanged; the eight bubble-pop frames were appended below the block.
+- Bubble-pop revision: eight 64x64 burst frames continue the idle bubble's
+  iridescent white / cyan / lavender film, deep blue inner rim, white specular
+  highlight and warm-white sparkles. Render them at 32x32, center anchor,
+  play once at 12-14 fps; do not loop.
+
+Authoring source: build.py, a deterministic Python 3 + Pillow renderer. It
+regenerates the background and every sprite category from code and packs this
+exact layout. No layered-paint or XCF source exists; the script is the source
+of truth.

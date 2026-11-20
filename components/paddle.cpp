@@ -2,55 +2,50 @@
 #include "raylib.h"
 #include <string>
 
-Vector2 Paddle::getCenter()
+Vector2 Paddle::getCenter() 
 {
     return Vector2{
-            this->rec.x + this->rec.width / 2, 
-            this->rec.y + this->rec.height / 2};
+            form.rec.x + form.rec.width / 2, 
+            form.rec.y + form.rec.height / 2};
+}
+
+void Paddle::move_p() 
+{
+    //  form.rec.x += v.vx * GetFrameTime();
+    form.rec.y += v.vy * GetFrameTime();
+}
+
+Rectangle Paddle::getRec() 
+{
+    return form.rec; 
 }
 
 Line Paddle::getBoundaryLine(const std::string direction)
 {
     if(direction == "left")
     {
-        return Line(this->rec.x, this->rec.y, 
-                this->rec.x, this->rec.y + this->rec.height);
+        return Line(form.rec.x, form.rec.y, 
+                form.rec.x, form.rec.y + form.rec.height);
     }
     else if(direction == "upper")
     {
-        return Line(this->rec.x, this->rec.y,
-                this->rec.x + this->rec.width, this->rec.y);
+        return Line(form.rec.x, form.rec.y,
+                form.rec.x + form.rec.width, form.rec.y);
     }
     else if(direction == "right")
     {
-        return Line(this->rec.x + this->rec.width, this->rec.y,
-                this->rec.x + this->rec.width, this->rec.y + this->rec.height);
+        return Line(form.rec.x + form.rec.width, form.rec.y,
+                form.rec.x + form.rec.width, form.rec.y + form.rec.height);
     }
     else if(direction == "bottom")
     {
-        return Line(this->rec.x, this->rec.y + this->rec.height,
-                this->rec.x + this->rec.width, this->rec.y + this->rec.height);
+        return Line(form.rec.x, form.rec.y + form.rec.height,
+                form.rec.x + form.rec.width, form.rec.y + form.rec.height);
     }
     else{return Line();}
 }
 
-void Paddle::Move()
-{
-    if(this->isNeedRemove)
-    {
-        this->isNeedRemove = false;
-        this->reMove();
-        return;
-    }
-    this->old_rec = this->rec;
-    //    this->rec.x += this->v.vx * GetFrameTime();
-    this->rec.y += this->v.vy * GetFrameTime();
-}
 
-void Paddle::reMove()
-{
-    this->rec = this->old_rec;
-}
 
 void Paddle::goUP()
 {
@@ -90,3 +85,4 @@ void Paddle::goDown()
         this->v.speedUp(0.0f, this->acc * GetFrameTime());
     }
 }
+

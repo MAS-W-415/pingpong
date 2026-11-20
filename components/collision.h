@@ -16,7 +16,7 @@ class Collision
         inline static float e_tangent= -0.0f;
         static void ball_with_paddle(Ball& ball, Paddle& paddle);
         static void ball_with_line(Ball& ball, Line& line);
-        static void ball_with_endLine(Ball ball, Line line, bool& key);
+        static void ball_with_endLine(Ball& ball, Line line, bool& key);
         static void paddle_with_line(Paddle& paddle, Line& line);
 
     private:

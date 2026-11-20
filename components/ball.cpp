@@ -1,22 +1,18 @@
 #include "./ball.h"
 #include "raylib.h"
 
-void Ball::Move()
+void Ball::move_p()
 {
-    if(this->isNeedRemove)
-    {
-        this->isNeedRemove = false;
-        Ball::reMove();
-        return;
-    }
-    this->old_x = this->centerX;
-    this->old_y = this->centerY;
-    this->centerX += this->v.vx * GetFrameTime();
-    this->centerY += this->v.vy * GetFrameTime();
+    form.pos.x += v.vx * GetFrameTime();
+    form.pos.y += v.vy * GetFrameTime();
 }
 
-void Ball::reMove()
+Rectangle Ball::getRec()
 {
-    this->centerX = this->old_x;
-    this->centerY = this->old_y;
+    return Rectangle{form.pos.x - form.radius, form.pos.y - form.radius, form.radius * 2.0f, form.radius * 2.0f};
+}
+
+void Ball::multiCollision()
+{
+    asset = {"ball.pop", assetMap.at("ball.pop")};
 }

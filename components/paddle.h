@@ -3,36 +3,35 @@
 
 #include "raylib.h"
 #include "velocity.h"
+#include "Object.h" 
 #include <string>
+#include <vector>
 
-class Paddle
+class Paddle : public Object<REC> 
 {
     public:
-        Rectangle rec;
-        Rectangle old_rec;
-        Color color;
-        Velocity v;
-        float mass;
-        inline static float acc = 10000.0f;
-        inline static float d_acc = 1000.0f;
-        inline static float turnBackFactor = 0.5f;
-
-        bool isNeedRemove = false;
-
-        Paddle(Rectangle rec, Color c, Velocity v, float m) 
-            : rec(rec), color(c), v(v), mass(m){;};
-        Paddle(){;}
+        Paddle(Rectangle r, Color c, Velocity v, float m, const std::string& asset_name, const _Asset& asset) : 
+            Object(REC{r}, c, v, m, asset_name, asset) {;}
+        Paddle()= default;
         ~Paddle() = default;
-        Vector2 getCenter();
+        Vector2 getCenter() override;
+
+    private:
+        void move_p() override;
+        Rectangle getRec() override;
+    
+
+    public:
         //  right \ upper \ left \ bottom
         Line getBoundaryLine(const std::string direction);
-        void Move();
         void goUP();
         void goDown();
         void slowDown();
 
     private:
-        void reMove();
+        inline static float acc = 10000.0f;
+        inline static float d_acc = 1000.0f;
+        inline static float turnBackFactor = 0.5f;
 
 };
 

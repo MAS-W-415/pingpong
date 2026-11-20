@@ -28,6 +28,20 @@ static inline bool MyCheckCollisionRecLine(Rectangle rec, Vector2 p1, Vector2 p2
         || CheckCollisionLines(p1, p2, d, a, &point);
 }
 
+static inline Vector2 operator*(Vector2 a, float b)
+{
+    return Vector2{a.x * b, a.y * b};
+}
+
+static inline bool operator!=(const Rectangle& a, const Rectangle& b)
+{
+    bool key1 = (a.x == b.x);
+    bool key2 = (a.y == b.y);
+    bool key3 = (a.width == b.width);
+    bool key4 = (a.height == b.height);
+    return key1 & key2 & key3 & key4;
+}
+
 #ifdef __cplusplus
 }
 #endif
